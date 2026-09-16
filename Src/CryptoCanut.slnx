@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="CryptoCanut.Test/CryptoCanut.Test.csproj" Id="49df2284-bfac-419f-be0a-071baa9d6adb" />
   <Project Path="CryptoCanut/CryptoCanut.csproj" />
 </Solution>

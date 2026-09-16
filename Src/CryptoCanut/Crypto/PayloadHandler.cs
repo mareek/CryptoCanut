@@ -17,7 +17,7 @@ internal class PayloadHandler
     private const int FixedHeaderLength = 1 + 2 + 8 + 11;
     private static readonly byte[] MagicString = [67, 82, 89, 80, 84, 79, 67, 65, 78, 85, 84]; //"CRYPTOCANUT"
 
-    public static void WriteToStream(Stream stream, FileInfo file)
+    public void WriteToStream(Stream stream, FileInfo file)
     {
         var fileNameBytes = Encoding.UTF8.GetBytes(file.Name);
         if (fileNameBytes.Length > ushort.MaxValue)
@@ -78,7 +78,7 @@ internal class PayloadHandler
         version = 0;
         fileNameLength = 0;
         payloadLength = 0;
-        
+
         var read = stream.ReadByte();
         if (read != FileVersion)
             return false;

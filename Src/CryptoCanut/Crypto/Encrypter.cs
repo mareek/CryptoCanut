@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Cryptography;
-using System.Text;
+﻿using System.Security.Cryptography;
 
 namespace CryptoCanut.Crypto;
 
-internal class Encrypter(IPasswordHasher passwordHasher)
+internal class Encrypter(IPasswordHasher passwordHasher, PayloadHandler payloadHandler)
 {
     private const byte FileVersion = 1;
 
@@ -39,7 +36,7 @@ internal class Encrypter(IPasswordHasher passwordHasher)
         fileStream.Write(salt);
     }
 
-    private static void WritePayload(Stream fileStream, byte[] passwordBytes, FileInfo inputFile)
+    private void WritePayload(Stream fileStream, byte[] passwordBytes, FileInfo inputFile)
     {
         using var aes = Aes.Create();
         aes.Key = passwordBytes[..16];
@@ -47,6 +44,6 @@ internal class Encrypter(IPasswordHasher passwordHasher)
 
         using var encryptor = aes.CreateEncryptor();
         using var cryptoStream = new CryptoStream(fileStream, encryptor, CryptoStreamMode.Write);
-        PayloadHandler.WriteToStream(cryptoStream, inputFile);
+        payloadHandler.WriteToStream(cryptoStream, inputFile);
     }
 }
