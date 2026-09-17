@@ -2,7 +2,7 @@
 
 namespace CryptoCanut.Crypto;
 
-internal class PayloadHandler
+internal class PayloadHandler : IPayloadHandler
 {
     /* Payload structure 
      *  1 byte  : version

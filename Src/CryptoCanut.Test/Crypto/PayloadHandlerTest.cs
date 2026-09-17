@@ -30,6 +30,14 @@ public class PayloadHandlerTest
             Check.That(version).Is((byte)1);
             Check.That((int)fileNameLength).Is(Encoding.UTF8.GetByteCount(tempFile.Name));
             Check.That((int)payloadLength).Is(Encoding.UTF8.GetByteCount(payload));
+
+            var fileNameBytes = new byte[fileNameLength];
+            stream.ReadExactly(fileNameBytes);
+            Check.That(Encoding.UTF8.GetString(fileNameBytes)).Is(tempFile.Name);
+
+            var payloadBytes = new byte[payloadLength];
+            stream.ReadExactly(payloadBytes);
+            Check.That(Encoding.UTF8.GetString(payloadBytes)).Is(payload);
         }
         finally
         {

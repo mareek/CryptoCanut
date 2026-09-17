@@ -2,7 +2,7 @@
 
 namespace CryptoCanut.Crypto;
 
-internal class Encrypter(IPasswordHasher passwordHasher, PayloadHandler payloadHandler)
+internal class Encrypter(IPasswordHasher passwordHasher, IPayloadHandler payloadHandler)
 {
     private const byte FileVersion = 1;
 
