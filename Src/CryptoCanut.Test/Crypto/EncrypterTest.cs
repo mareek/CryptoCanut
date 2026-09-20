@@ -20,9 +20,9 @@ public class EncrypterTest
             File.WriteAllText(inputFile.FullName, payload);
 
             PasswordHasherStub hasher = new();
-            PayloadHandlerStub payloadHandler = new();
+            PayloadWriterStub payloadWriter = new();
 
-            Encrypter encrypter = new(hasher, payloadHandler);
+            Encrypter encrypter = new(hasher, payloadWriter);
             encrypter.EncryptFile(inputFile, password, outputFile);
         }
         finally

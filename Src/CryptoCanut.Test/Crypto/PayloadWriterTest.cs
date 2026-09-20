@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.AccessControl;
-using System.Text;
+﻿using System.Text;
 using CryptoCanut.Crypto;
 using NFluent;
 
 namespace CryptoCanut.Test.Crypto;
 
-public class PayloadHandlerTest
+public class PayloadWriterTest
 {
     [Fact]
     public void FullTest()
@@ -21,12 +18,13 @@ public class PayloadHandlerTest
 
             // Act
             using MemoryStream stream = new();
-            PayloadHandler handler = new();
-            handler.WriteToStream(stream, tempFile);
+            PayloadWriter payloadWriter = new();
+            PayloadReader payloadReader = new();
+            payloadWriter.WriteToStream(stream, tempFile);
 
             // Assert
             stream.Seek(0, SeekOrigin.Begin);
-            Check.That(handler.TryReadHeader(stream, out var version, out var fileNameLength, out var payloadLength)).IsTrue();
+            Check.That(payloadReader.TryReadHeader(stream, out var version, out var fileNameLength, out var payloadLength)).IsTrue();
             Check.That(version).Is((byte)1);
             Check.That((int)fileNameLength).Is(Encoding.UTF8.GetByteCount(tempFile.Name));
             Check.That((int)payloadLength).Is(Encoding.UTF8.GetByteCount(payload));

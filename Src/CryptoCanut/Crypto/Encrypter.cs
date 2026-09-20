@@ -2,7 +2,7 @@
 
 namespace CryptoCanut.Crypto;
 
-internal class Encrypter(IPasswordHasher passwordHasher, IPayloadHandler payloadHandler)
+internal class Encrypter(IPasswordHasher passwordHasher, IPayloadWriter payloadWriter)
 {
     private const byte FileVersion = 1;
 
@@ -44,6 +44,6 @@ internal class Encrypter(IPasswordHasher passwordHasher, IPayloadHandler payload
 
         using var encryptor = aes.CreateEncryptor();
         using var cryptoStream = new CryptoStream(fileStream, encryptor, CryptoStreamMode.Write);
-        payloadHandler.WriteToStream(cryptoStream, inputFile);
+        payloadWriter.WriteToStream(cryptoStream, inputFile);
     }
 }
