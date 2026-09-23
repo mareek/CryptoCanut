@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace CryptoCanut.Crypto;
+﻿namespace CryptoCanut.Crypto;
 
 internal class PayloadReader
 {
@@ -14,7 +12,6 @@ internal class PayloadReader
      */
 
     private const byte FileVersion = 1;
-    private const int FixedHeaderLength = 1 + 2 + 8 + 11;
     private static readonly byte[] MagicString = [67, 82, 89, 80, 84, 79, 67, 65, 78, 85, 84]; //"CRYPTOCANUT"
 
     public bool TryReadHeader(Stream stream, out byte version, out ushort fileNameLength, out long payloadLength)
@@ -30,21 +27,21 @@ internal class PayloadReader
         version = (byte)read;
 
         Span<byte> fileNameLengthBytes = stackalloc byte[2];
-        read = stream.Read(fileNameLengthBytes);
+        read = stream.ReadFullBuffer(fileNameLengthBytes);
         if (read != 2)
             return false;
 
         fileNameLength = BitConverter.ToUInt16(fileNameLengthBytes);
 
         Span<byte> payloadLengthBytes = stackalloc byte[8];
-        read = stream.Read(payloadLengthBytes);
+        read = stream.ReadFullBuffer(payloadLengthBytes);
         if (read != 8)
             return false;
 
         payloadLength = BitConverter.ToInt64(payloadLengthBytes);
 
         Span<byte> magicStringBytes = stackalloc byte[MagicString.Length];
-        read = stream.Read(magicStringBytes);
+        read = stream.ReadFullBuffer(magicStringBytes);
         if (read != MagicString.Length)
             return false;
 

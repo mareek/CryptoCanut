@@ -2,7 +2,7 @@
 
 namespace CryptoCanut.Crypto;
 
-internal class PayloadWriter : IPayloadWriter
+internal class PayloadWriter
 {
     /* Payload structure 
      *  1 byte  : version
