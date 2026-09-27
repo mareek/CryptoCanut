@@ -14,7 +14,6 @@ internal class PayloadWriter
      */
 
     private const byte FileVersion = 1;
-    private const int FixedHeaderLength = 1 + 2 + 8 + 11;
     private static readonly byte[] MagicString = [67, 82, 89, 80, 84, 79, 67, 65, 78, 85, 84]; //"CRYPTOCANUT"
 
     public void WriteToStream(Stream stream, FileInfo file)
@@ -38,21 +37,19 @@ internal class PayloadWriter
         using (var fileStream = file.OpenRead())
             fileStream.CopyTo(stream);
 
-        PadStream(stream, ComputePadingLength(fileNameBytes.Length, file.Length));
+        PadStream(stream, ComputePadingLength(file.Length));
     }
 
-    private static long ComputePadingLength(int fileNameLength, long payloadLength)
+    private static long ComputePadingLength(long payloadLength)
     {
         const int minPowerOf2 = 11;
         const int maxPowerOf2 = 63;
 
-        long totalLength = FixedHeaderLength + fileNameLength + payloadLength;
-
         for (int i = minPowerOf2; i < maxPowerOf2; i++)
         {
             var targetLength = (long)Math.Pow(2, i);
-            if (totalLength < targetLength)
-                return targetLength - totalLength;
+            if (payloadLength < targetLength)
+                return targetLength - payloadLength;
         }
 
         throw new ArgumentException("file is too big", nameof(payloadLength));

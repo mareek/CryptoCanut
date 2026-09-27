@@ -22,13 +22,21 @@ internal class Encrypter(PasswordHasher passwordHasher)
 
         var tempFilePath = Path.GetTempFileName();
 
-        using (var tempFileStream = File.OpenWrite(tempFilePath))
+        try
         {
-            WriteHeader(tempFileStream, salt);
-            WritePayload(tempFileStream, passwordBytes, inputFile);
-        }
+            using (var tempFileStream = File.OpenWrite(tempFilePath))
+            {
+                WriteHeader(tempFileStream, salt);
+                WritePayload(tempFileStream, passwordBytes, inputFile);
+            }
 
-        File.Move(tempFilePath, outputFile.FullName, overwrite: true);
+            File.Move(tempFilePath, outputFile.FullName, overwrite: true);
+        }
+        catch
+        {
+            File.Delete(tempFilePath);
+            throw;
+        }
     }
 
     private static void WriteHeader(Stream fileStream, byte[] salt)
@@ -38,7 +46,7 @@ internal class Encrypter(PasswordHasher passwordHasher)
         fileStream.Write(salt);
     }
 
-    private void WritePayload(Stream fileStream, byte[] passwordBytes, FileInfo inputFile)
+    private static void WritePayload(Stream fileStream, byte[] passwordBytes, FileInfo inputFile)
     {
         using var aes = Aes.Create();
         aes.Key = passwordBytes[..16];

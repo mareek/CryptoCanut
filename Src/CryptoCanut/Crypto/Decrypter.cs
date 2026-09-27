@@ -1,5 +1,4 @@
 ﻿using System.Security.Cryptography;
-using System.Text;
 
 namespace CryptoCanut.Crypto;
 
@@ -42,43 +41,7 @@ internal class Decrypter(PasswordHasher passwordHasher)
         using var decryptor = aes.CreateDecryptor();
         using var cryptoStream = new CryptoStream(stream, decryptor, CryptoStreamMode.Read, leaveOpen: true);
 
-        return TryExtractPayload(outputDirectory, cryptoStream);
-    }
-
-    private bool TryExtractPayload(DirectoryInfo outputDirectory, CryptoStream cryptoStream)
-    {
         PayloadReader payloadReader = new();
-        if (!payloadReader.TryReadHeader(cryptoStream, out var version, out var fileNameLength, out var payloadLength))
-            return false;
-
-        byte[] fileNameBytes = new byte[fileNameLength];
-        long read = cryptoStream.ReadFullBuffer(fileNameBytes);
-        if (read != fileNameLength)
-            return false;
-
-        string fileName = Encoding.UTF8.GetString(fileNameBytes);
-
-        using var outputStream = CreateOutputFileStream(outputDirectory, fileName);
-        read = cryptoStream.CopyStream(outputStream, payloadLength);
-
-        if (read != payloadLength)
-            return false;
-
-        return true;
-    }
-
-    private static Stream CreateOutputFileStream(DirectoryInfo outputDirectory, string preferedFileName)
-    {
-        var fileName = Path.GetFileNameWithoutExtension(preferedFileName);
-        var extension = Path.GetExtension(preferedFileName);
-        var filePath = Path.Combine(outputDirectory.FullName, preferedFileName);
-
-        int counter = 1;
-        while (File.Exists(filePath))
-        {
-            filePath = Path.Combine(outputDirectory.FullName, $"{fileName}-{counter++}.{extension}");
-        }
-
-        return File.Create(filePath);
+        return payloadReader.TryExtractPayload(outputDirectory, cryptoStream);
     }
 }

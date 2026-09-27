@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CryptoCanut.Crypto;
+﻿namespace CryptoCanut.Crypto;
 
 internal static class StreamExtension
 {
@@ -45,6 +41,5 @@ internal static class StreamExtension
 
             return totalRead;
         }
-
     }
 }
