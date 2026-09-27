@@ -25,8 +25,10 @@ internal class PayloadWriter
         Span<byte> fileNameLengthBytes = stackalloc byte[2];
         BitConverter.TryWriteBytes(fileNameLengthBytes, (ushort)fileNameBytes.Length);
 
+        file.Refresh(); // to make sure the size is up to date
+        var fileLength = file.Length;
         Span<byte> payloadLengthBytes = stackalloc byte[8];
-        BitConverter.TryWriteBytes(payloadLengthBytes, file.Length);
+        BitConverter.TryWriteBytes(payloadLengthBytes, fileLength);
 
         stream.WriteByte(FileVersion);
         stream.Write(fileNameLengthBytes);
@@ -37,7 +39,8 @@ internal class PayloadWriter
         using (var fileStream = file.OpenRead())
             fileStream.CopyTo(stream);
 
-        PadStream(stream, ComputePadingLength(file.Length));
+        long padLength = ComputePadingLength(fileLength);
+        PadStream(stream, padLength);
     }
 
     private static long ComputePadingLength(long payloadLength)

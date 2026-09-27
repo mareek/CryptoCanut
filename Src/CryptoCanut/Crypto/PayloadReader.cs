@@ -74,7 +74,7 @@ internal class PayloadReader
         int counter = 1;
         while (File.Exists(filePath))
         {
-            filePath = Path.Combine(outputDirectory.FullName, $"{fileName}-{counter++}.{extension}");
+            filePath = Path.Combine(outputDirectory.FullName, $"{fileName}-{counter++}{extension}");
         }
 
         return File.Create(filePath);

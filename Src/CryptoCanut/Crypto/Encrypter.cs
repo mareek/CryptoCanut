@@ -32,10 +32,9 @@ internal class Encrypter(PasswordHasher passwordHasher)
 
             File.Move(tempFilePath, outputFile.FullName, overwrite: true);
         }
-        catch
+        finally
         {
             File.Delete(tempFilePath);
-            throw;
         }
     }
 
