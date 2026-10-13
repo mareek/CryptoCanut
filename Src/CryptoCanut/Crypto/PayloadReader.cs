@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using CryptoCanut.Helpers;
 
 namespace CryptoCanut.Crypto;
 
@@ -28,7 +29,7 @@ internal class PayloadReader
 
         string fileName = Encoding.UTF8.GetString(fileNameBytes);
 
-        using var outputStream = CreateOutputFileStream(outputDirectory, fileName);
+        using var outputStream = FileHelpers.GetAvailableFilePath(outputDirectory, fileName).Create();
         read = inputStream.CopyStream(outputStream, payloadLength);
 
         return read == payloadLength;
@@ -63,20 +64,5 @@ internal class PayloadReader
             return false;
 
         return MagicString.SequenceEqual(magicStringBytes);
-    }
-
-    private static Stream CreateOutputFileStream(DirectoryInfo outputDirectory, string preferedFileName)
-    {
-        var fileName = Path.GetFileNameWithoutExtension(preferedFileName);
-        var extension = Path.GetExtension(preferedFileName);
-        var filePath = Path.Combine(outputDirectory.FullName, preferedFileName);
-
-        int counter = 1;
-        while (File.Exists(filePath))
-        {
-            filePath = Path.Combine(outputDirectory.FullName, $"{fileName}-{counter++}{extension}");
-        }
-
-        return File.Create(filePath);
     }
 }
