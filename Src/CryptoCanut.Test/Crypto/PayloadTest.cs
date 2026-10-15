@@ -106,7 +106,7 @@ public class PayloadTest
             // Act
             for (int i = 0; i < fileCount; i++)
             {
-                byte[] payload = new byte[payloadSize + i * 10];
+                byte[] payload = new byte[payloadSize + i * 1];
                 Random.Shared.NextBytes(payload);
                 File.WriteAllBytes(inputFile.FullName, payload);
 

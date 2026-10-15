@@ -43,19 +43,17 @@ internal class PayloadWriter
         PadStream(stream, padLength);
     }
 
-    private static long ComputePadingLength(long payloadLength)
+    /// <summary>
+    /// Computes the number of additional bytes required to pad a payload.
+    /// </summary>
+    /// <param name="payloadLength">the payload length</param>
+    /// <param name="maxPaddingFactor">the aproximate factor by wich te payload is alowed to grow in size</param>
+    /// <returns>the number of bytes to add to the payload</returns>
+    private static long ComputePadingLength(long payloadLength, double maxPaddingFactor = 1.2)
     {
-        const int minPowerOf2 = 11;
-        const int maxPowerOf2 = 63;
-
-        for (int i = minPowerOf2; i < maxPowerOf2; i++)
-        {
-            var targetLength = (long)Math.Pow(2, i);
-            if (payloadLength < targetLength)
-                return targetLength - payloadLength;
-        }
-
-        throw new ArgumentException("file is too big", nameof(payloadLength));
+        var logLength = Math.Log(payloadLength, maxPaddingFactor);
+        var paddedSize = (long)Math.Pow(maxPaddingFactor, Math.Ceiling(logLength));
+        return paddedSize - payloadLength;
     }
 
     private static void PadStream(Stream stream, long padLength)
