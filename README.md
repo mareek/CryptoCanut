@@ -3,7 +3,7 @@
 An amateur command line tool to encrypt and decrypt files (using AES for encryption and PBKDF2 for password hashing)
 
 > [!WARNING]
-> I'm not a security expert, they're may be some vulnerabilities
+> I'm not a security expert, there may be some vulnerabilities
 
 ## Usage
 
